@@ -58,10 +58,10 @@ function openCompanyPage(companyName, topicName){
   document.getElementById('cpDesc').textContent=c.summary;
   const _kpiTips = {
     'all':       '',
-    'ai':        'AI 岗位 = Builder + User 两类之和。Builder 直接参与 AI 能力建设（训练、推理优化、Agent/Infra、评测与安全等）；User 主要把 AI 能力用到业务里（接入模型能力、调用 AI 工具提效）。',
+    'ai':        'Builder + User 两类之和。Builder 负责 AI 能力建设，如训练、优化、Agent/Infra；User 负责在业务中接入和使用 AI。',
     'fullstack': '同时承担前后端的工程师。关键判定词：「全栈」「前后端」「全链路开发」，JD 中普遍要求 AI Coding 能力。',
     'fde':       'Forward Deployed Engineer，前线部署工程师。代表岗位：解决方案工程师、交付工程师。核心是把技术能力转化为客户业务结果。',
-    'pde':       'Product Design Engineer / Product Engineer。判定要求：岗位文本直接出现 Product Engineer / 产品设计工程师 / PDE 即可认定；否则必须同时命中三维信号：「产品判断」 + 「体验感知」 + 「工程实现」三维。',
+    'pde':       'Product Engineer，产品工程师。兼具产品判断、交互设计与工程实现能力，能独立完成一个功能从定义到上线的全流程。',
   };
   const topicKeyMap = {'全栈工程师':'fullstack','FDE 专题':'fde','PDE 专题':'pde'};
   window._cpActiveMetric = topicKeyMap[topicName] || 'all';
@@ -353,7 +353,7 @@ function selTopic(id){
   const topicTips = {
     'fullstack':'同时承担前后端的工程师。关键判定词：「全栈」「前后端」「全链路开发」，JD 中普遍要求 AI Coding 能力。',
     'fde':'Forward Deployed Engineer，前线部署工程师。代表岗位：解决方案工程师、交付工程师。核心要求是把技术能力转化为客户业务结果。',
-    'pde':'Product Design Engineer / Product Engineer，产品工程师。判定要求：岗位文本直接出现 Product Engineer / 产品设计工程师 / PDE 即可认定；否则必须同时命中三维信号：「产品判断」 + 「体验感知」 + 「工程实现」三维全中。',
+    'pde':'Product Engineer，产品工程师。兼具产品判断、交互设计与工程实现能力，能独立完成一个功能从定义到上线的全流程。',
     'emerging':'近 30 天内，平台侧、模型侧与应用侧出现了更细分的 AI 原生分工，反映行业正在从「是否做 AI」转向「如何把 AI 工程化、规模化、业务化」。新兴岗位集中在工程化、评测、安全与应用落地等环节，组织分工持续加深。'
   };
   const topicTipHtml = topicTips[t.id] ? `<span class="tip-wrap"><span class="tip-icon" tabindex="0" onmouseenter="tipShow(this)" onmouseleave="tipHide(this)" onfocus="tipShow(this)" onblur="tipHide(this)">${TIP_ICON}</span><span class="tip-box">${topicTips[t.id]}</span></span>` : '';
