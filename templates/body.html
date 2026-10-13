@@ -1,0 +1,328 @@
+
+<div class="container">
+  <header>
+    <div class="logo"><h1>竞品岗位情报看板</h1></div>
+    <div style="font-size:12px;color:var(--muted)">数据截止 2026-10-10</div>
+  </header>
+
+  <section class="section">
+    <div class="sec-title">数据趋势</div>
+    <div class="ov-row">
+      <div class="ov-card">
+        <div><div class="ov-label">岗位总量</div><div class="ov-val">20,852</div>
+        <div class="ov-sub">覆盖 7 大厂 + 6 家 AI 独角兽 · 社招 16,779 / 校招 4,073</div></div>
+        <canvas class="sparkline" id="spark1"></canvas>
+      </div>
+      <div class="ov-card">
+        <div><div class="ov-label">AI 岗位<span class="tip-wrap"><span class="tip-icon" tabindex="0" onmouseenter="tipShow(this)" onmouseleave="tipHide(this)" onfocus="tipShow(this)" onblur="tipHide(this)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.25" stroke="currentColor" stroke-width="1.5"/><path d="M6.9 6.1a1.35 1.35 0 1 1 2.1 1.12c-.72.48-1 .82-1 1.53v.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="11.5" r=".8" fill="currentColor"/></svg></span><span class="tip-box">Builder + User 两类之和。<br><b>Builder</b>：岗位本身在造 AI，如大模型训练、推理优化、Prompt 工程师。<br><b>User</b>：岗位利用 AI 工具提效，如 AI 运营、Copilot 接入。</span></span></div><div class="ov-val up">4,936</div>
+        <div class="ov-sub">占比 24% · 社招 3,075 / 校招 1,861</div></div>
+        <canvas class="sparkline" id="spark2"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="sec-title">专题透视</div>
+    <div class="topic-layout">
+      <div class="topic-tabs"><div class="topic-tab active" data-id="fullstack" onclick="selTopic('fullstack')"><div class="topic-tab-name">全栈工程师</div></div><div class="topic-tab" data-id="fde" onclick="selTopic('fde')"><div class="topic-tab-name">FDE 专题</div></div><div class="topic-tab" data-id="pde" onclick="selTopic('pde')"><div class="topic-tab-name">PDE 专题</div></div><div class="topic-tab" data-id="emerging" onclick="selTopic('emerging')"><div class="topic-tab-name">新兴岗位</div></div><div class="topic-tab" data-id="tech_stack" onclick="selTopic('tech_stack')"><div class="topic-tab-name">方向热度与技术栈</div></div></div>
+      <div class="topic-panel" id="topicPanel"></div>
+    </div>
+  </section>
+
+<div style="display:none">
+
+  <section class="section">
+    <div class="sec-title">AI 独角兽</div>
+    <div style="font-size:13px;color:#64748b;margin-bottom:16px">
+      共 1,065 个在招岗位，AI 相关 399 个（37%）· 覆盖 DeepSeek / Kimi / Manus / MiniMax / 阶跃星辰 / 智谱
+    </div>
+    <div class="co-grid" style="margin-bottom:14px">
+        <div class="co-card" style="cursor:default">
+          <div class="co-name">
+            <span style="font-size:15px;font-weight:800">DeepSeek</span>
+            <span class="co-status">扩张中</span>
+          </div>
+          <div class="co-mini-grid">
+            <div class="mini-kpi">
+              <div class="mini-label">在招总量</div>
+              <div class="mini-value">37</div>
+              <div class="mini-trend" style="color:#64748b">本期快照</div>
+            </div>
+            <div class="mini-kpi">
+              <div class="mini-label">AI 岗位</div>
+              <div class="mini-value">15</div>
+              <div class="mini-trend" style="color:#2563eb">占比 41%</div>
+            </div>
+          </div>
+          <div style="font-size:11px;color:#64748b;margin-bottom:4px">城市：北京(31) · 杭州(31) · 乌兰察布(2)</div>
+          <div style="font-size:11px;color:#64748b;margin-bottom:4px">方向：Agent(7) · LLM/大模型(4) · 其他AI(2)</div>
+          <div style="font-size:11px;color:#64748b">FDE 0 · 新兴 0</div>
+        </div>
+        <div class="co-card" style="cursor:default">
+          <div class="co-name">
+            <span style="font-size:15px;font-weight:800">Kimi</span>
+            <span class="co-status">扩张中</span>
+          </div>
+          <div class="co-mini-grid">
+            <div class="mini-kpi">
+              <div class="mini-label">在招总量</div>
+              <div class="mini-value">193</div>
+              <div class="mini-trend" style="color:#64748b">本期快照</div>
+            </div>
+            <div class="mini-kpi">
+              <div class="mini-label">AI 岗位</div>
+              <div class="mini-value">61</div>
+              <div class="mini-trend" style="color:#2563eb">占比 32%</div>
+            </div>
+          </div>
+          <div style="font-size:11px;color:#64748b;margin-bottom:4px">城市：北京(112) · 上海(26) · 深圳(8)</div>
+          <div style="font-size:11px;color:#64748b;margin-bottom:4px">方向：Agent(24) · LLM/大模型(23) · AI Infra(6)</div>
+          <div style="font-size:11px;color:#64748b">FDE 1 · 新兴 9</div>
+        </div>
+        <div class="co-card" style="cursor:default">
+          <div class="co-name">
+            <span style="font-size:15px;font-weight:800">Manus</span>
+            <span class="co-status">结构转型</span>
+          </div>
+          <div class="co-mini-grid">
+            <div class="mini-kpi">
+              <div class="mini-label">在招总量</div>
+              <div class="mini-value">17</div>
+              <div class="mini-trend" style="color:#64748b">本期快照</div>
+            </div>
+            <div class="mini-kpi">
+              <div class="mini-label">AI 岗位</div>
+              <div class="mini-value">5</div>
+              <div class="mini-trend" style="color:#2563eb">占比 29%</div>
+            </div>
+          </div>
+          <div style="font-size:11px;color:#64748b;margin-bottom:4px">城市：北京(17)</div>
+          <div style="font-size:11px;color:#64748b;margin-bottom:4px">方向：Agent(4) · LLM/大模型(1)</div>
+          <div style="font-size:11px;color:#64748b">FDE 0 · 新兴 0</div>
+        </div>
+        <div class="co-card" style="cursor:default">
+          <div class="co-name">
+            <span style="font-size:15px;font-weight:800">MiniMax</span>
+            <span class="co-status">扩张中</span>
+          </div>
+          <div class="co-mini-grid">
+            <div class="mini-kpi">
+              <div class="mini-label">在招总量</div>
+              <div class="mini-value">297</div>
+              <div class="mini-trend" style="color:#64748b">本期快照</div>
+            </div>
+            <div class="mini-kpi">
+              <div class="mini-label">AI 岗位</div>
+              <div class="mini-value">122</div>
+              <div class="mini-trend" style="color:#2563eb">占比 41%</div>
+            </div>
+          </div>
+          <div style="font-size:11px;color:#64748b;margin-bottom:4px">城市：上海(277) · 北京(204) · 旧金山(20)</div>
+          <div style="font-size:11px;color:#64748b;margin-bottom:4px">方向：LLM/大模型(64) · CV & AIGC(20) · Agent(15)</div>
+          <div style="font-size:11px;color:#64748b">FDE 2 · 新兴 0</div>
+        </div>
+        <div class="co-card" style="cursor:default">
+          <div class="co-name">
+            <span style="font-size:15px;font-weight:800">阶跃星辰</span>
+            <span class="co-status">扩张中</span>
+          </div>
+          <div class="co-mini-grid">
+            <div class="mini-kpi">
+              <div class="mini-label">在招总量</div>
+              <div class="mini-value">362</div>
+              <div class="mini-trend" style="color:#64748b">本期快照</div>
+            </div>
+            <div class="mini-kpi">
+              <div class="mini-label">AI 岗位</div>
+              <div class="mini-value">131</div>
+              <div class="mini-trend" style="color:#2563eb">占比 36%</div>
+            </div>
+          </div>
+          <div style="font-size:11px;color:#64748b;margin-bottom:4px">城市：上海(282) · 北京(146) · 深圳(42)</div>
+          <div style="font-size:11px;color:#64748b;margin-bottom:4px">方向：LLM/大模型(76) · Agent(34) · 其他AI(10)</div>
+          <div style="font-size:11px;color:#64748b">FDE 0 · 新兴 9</div>
+        </div>
+        <div class="co-card" style="cursor:default">
+          <div class="co-name">
+            <span style="font-size:15px;font-weight:800">智谱</span>
+            <span class="co-status">扩张中</span>
+          </div>
+          <div class="co-mini-grid">
+            <div class="mini-kpi">
+              <div class="mini-label">在招总量</div>
+              <div class="mini-value">159</div>
+              <div class="mini-trend" style="color:#64748b">本期快照</div>
+            </div>
+            <div class="mini-kpi">
+              <div class="mini-label">AI 岗位</div>
+              <div class="mini-value">65</div>
+              <div class="mini-trend" style="color:#2563eb">占比 41%</div>
+            </div>
+          </div>
+          <div style="font-size:11px;color:#64748b;margin-bottom:4px">城市：北京(53) · 杭州(6) · 上海(5)</div>
+          <div style="font-size:11px;color:#64748b;margin-bottom:4px">方向：LLM/大模型(37) · 其他AI(15) · Agent(6)</div>
+          <div style="font-size:11px;color:#64748b">FDE 2 · 新兴 6</div>
+        </div>
+    </div>
+    <div class="two-col">
+      <div class="page-card">
+        <div class="block-title">新兴岗位</div>
+        <div class="block-sub">近一个月新出现岗位（大厂+AI独角兽）</div>
+        <table class="job-table">
+          <thead><tr><th style="width:52%">岗位</th><th>公司</th><th>城市</th><th>类型</th></tr></thead>
+          <tbody><tr><td><span class='job-name'>Creative Technologist｜创意技术专家</span></td><td style='color:#475569'>Kimi</td><td style='color:#64748b'>-</td><td style='color:#64748b'>AI Taste / Creative Technologist</td></tr><tr><td><span class='job-name'>Agentic Commerce Engineer</span></td><td style='color:#475569'>Kimi</td><td style='color:#64748b'>北京</td><td style='color:#64748b'>Agentic 工程化</td></tr><tr><td><span class='job-name'>Post-Training Algorithm Researcher/Engineer</span></td><td style='color:#475569'>Kimi</td><td style='color:#64748b'>-</td><td style='color:#64748b'>Post-Training 工程师</td></tr><tr><td><span class='job-name'>AI Taste Mentor</span></td><td style='color:#475569'>Kimi</td><td style='color:#64748b'>北京</td><td style='color:#64748b'>AI Taste / Creative Technologist</td></tr><tr><td><span class='job-name'>GTM Engineer</span></td><td style='color:#475569'>Kimi</td><td style='color:#64748b'>-</td><td style='color:#64748b'>GTM Engineer</td></tr><tr><td><span class='job-name'>AI Agent 产品实习生（Vibe Coding 方向）</span></td><td style='color:#475569'>Kimi</td><td style='color:#64748b'>-</td><td style='color:#64748b'>Code Agent / Vibe Coding</td></tr><tr><td><span class='job-name'>Scientist, Frontier Science Evals  前沿科学评估研究员​（FTE/intern）</span></td><td style='color:#475569'>Kimi</td><td style='color:#64748b'>-</td><td style='color:#64748b'>Frontier Eval 工程师</td></tr><tr><td><span class='job-name'>Kimi 金融产品实习生（PM & Harness 方向）</span></td><td style='color:#475569'>Kimi</td><td style='color:#64748b'>-</td><td style='color:#64748b'>Agent Harness 工程师</td></tr><tr><td><span class='job-name'>Agent Harness 产品经理</span></td><td style='color:#475569'>阶跃星辰</td><td style='color:#64748b'>上海</td><td style='color:#64748b'>Agent Harness 工程师</td></tr><tr><td><span class='job-name'>Agent Runtime开发工程师</span></td><td style='color:#475569'>阶跃星辰</td><td style='color:#64748b'>北京</td><td style='color:#64748b'>Agent Harness 工程师</td></tr><tr><td><span class='job-name'>Agent Harness开发工程师</span></td><td style='color:#475569'>阶跃星辰</td><td style='color:#64748b'>北京</td><td style='color:#64748b'>Agent Harness 工程师</td></tr><tr><td><span class='job-name'>Agent Harness 技术leader</span></td><td style='color:#475569'>阶跃星辰</td><td style='color:#64748b'>北京</td><td style='color:#64748b'>Agent Harness 工程师</td></tr></tbody>
+        </table>
+      </div>
+      <div class="page-card">
+        <div class="block-title">FDE 前线部署岗位</div>
+        <div class="block-sub">命中 FDE / Forward Deployed 关键词</div>
+        <table class="job-table">
+          <thead><tr><th style="width:52%">岗位</th><th>公司</th><th>城市</th><th></th></tr></thead>
+          <tbody><tr><td><span class='job-name'>Forward Deployed Engineer</span></td><td style='color:#475569'>Kimi</td><td style='color:#64748b'>-</td><td><a class='btn-ghost' href='https://app.mokahr.com/social-recruitment/moonshot/148506#/job/d49677fe-261d-4908-8e60-f428ed28e7d9' target='_blank' rel='noopener' style='text-decoration:none;display:inline-block'>查看 JD ↗</a></td></tr><tr><td><span class='job-name'>前沿部署工程师FDE（AI行业落地）</span></td><td style='color:#475569'>MiniMax</td><td style='color:#64748b'>北京</td><td><a class='btn-ghost' href='https://vrfi1sk8a0.jobs.feishu.cn/index/position/7641891406751287603/detail' target='_blank' rel='noopener' style='text-decoration:none;display:inline-block'>查看 JD ↗</a></td></tr><tr><td><span class='job-name'>Forward Deployed Engineer（前沿部署工程师）</span></td><td style='color:#475569'>MiniMax</td><td style='color:#64748b'>深圳</td><td><a class='btn-ghost' href='https://vrfi1sk8a0.jobs.feishu.cn/index/position/7598036042735110446/detail' target='_blank' rel='noopener' style='text-decoration:none;display:inline-block'>查看 JD ↗</a></td></tr><tr><td><span class='job-name'>MaaS-FDE工程师</span></td><td style='color:#475569'>智谱</td><td style='color:#64748b'>-</td><td><a class='btn-ghost' href='https://app.mokahr.com/social-recruitment/zphz/148983#/job/7ce3066e-85b5-49c8-874b-cf465b2c4587' target='_blank' rel='noopener' style='text-decoration:none;display:inline-block'>查看 JD ↗</a></td></tr><tr><td><span class='job-name'>FDE工程师</span></td><td style='color:#475569'>智谱</td><td style='color:#64748b'>北京</td><td><a class='btn-ghost' href='https://app.mokahr.com/social-recruitment/zphz/148983#/job/1e90af61-4136-404e-82fa-93ce10bd9dc5' target='_blank' rel='noopener' style='text-decoration:none;display:inline-block'>查看 JD ↗</a></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</div>
+  <section class="section">
+    <div class="sec-title">行业概览</div>
+    <div class="co-grid" id="coGrid"></div>
+  </section>
+
+  <section class="section">
+    <div class="sec-title">岗位明细查询</div>
+    <div class="search-row" style="margin-bottom:10px">
+      <input type="text" id="jQ" class="input-ui" placeholder="搜索关键词，如：Agent / 全栈 / 字节跳动..."/>
+      <button class="btn-ui" onclick="searchJobs()">查询</button>
+      <button class="btn-ghost" onclick="exportCsv()" style="padding:0 14px">导出 CSV</button>
+    </div>
+    <div class="filter-bar">
+      <select id="fCo" class="filter-sel" onchange="searchJobs()">
+        <option value="">全部公司</option>
+        <option>字节跳动</option><option>腾讯</option><option>阿里淘天</option>
+        <option>美团</option><option>小红书</option><option>京东零售</option><option>拼多多</option><option>DeepSeek</option><option>Kimi</option><option>Manus</option><option>MiniMax</option><option>阶跃星辰</option><option>智谱</option>
+      </select>
+      <select id="fType" class="filter-sel" onchange="searchJobs()">
+        <option value="">全部类型</option>
+        <option>社招</option><option>校招</option><option>实习</option>
+      </select>
+      <select id="fDir" class="filter-sel" onchange="searchJobs()">
+        <option value="">全部方向</option>
+        <option>产品</option><option>Agent研发</option><option>后端研发</option>
+        <option>算法</option><option>数据分析</option><option>前端研发</option>
+        <option>LLM/大模型</option><option>AI Infra</option><option>推荐/广告</option>
+      </select>
+      <select id="fDate" class="filter-sel" onchange="searchJobs()">
+        <option value="">全部时间</option>
+        <option value="1">近 1 天</option><option value="3">近 3 天</option>
+        <option value="7">近 7 天</option><option value="14">近两周</option>
+        <option value="30">近一个月</option><option value="99">更早</option>
+      </select>
+      <span id="filterCount" style="font-size:12px;color:var(--muted);margin-left:4px"></span>
+    </div>
+    <div class="list-box" id="jobList"></div>
+  </section>
+</div>
+
+<!-- 岗位详情弹窗 -->
+<div class="modal-mask" id="jobModal" onclick="if(event.target===this) closeJobModal()">
+  <div class="modal-card">
+    <div class="modal-top">
+      <div class="modal-title" id="modalTitle">岗位详情</div>
+      <button class="modal-close" onclick="closeJobModal()">关闭</button>
+    </div>
+    <div class="modal-badges" id="modalBadges"></div>
+    <div class="modal-sec"><h4>岗位职责</h4><ul id="modalDuties"></ul></div>
+    <div class="modal-sec"><h4>任职要求</h4><ul id="modalReqs"></ul></div>
+  </div>
+</div>
+
+<!-- 公司详情页（全屏） -->
+<div class="page-mask" id="companyPage">
+  <div class="page-wrap">
+    <div class="back-bar">
+      <div class="back-link" onclick="closeCompanyPage()">← 返回看板</div>
+      <div style="font-size:12px;color:var(--muted)">数据截止 2026-10-10</div>
+    </div>
+
+    <div class="page-card">
+      <div class="page-hero">
+        <div>
+          <div class="page-title"><span id="cpName">公司</span><span class="co-status" id="cpStatus">状态</span></div>
+          <div class="hero-desc" id="cpDesc"></div>
+        </div>
+      </div>
+      <div class="kpi-row" id="cpKpis"></div>
+    </div>
+
+    <div class="page-card cp-overview-only">
+      <div class="block-title">招聘规模趋势（近 6 期）</div>
+      <div class="block-sub">图例说明：虚线为总量，圆点为 AI 相关</div>
+      <div style="display:flex;gap:24px;align-items:flex-start">
+        <canvas id="cpTrend" style="width:100%;height:190px;flex:1"></canvas>
+        <div style="display:flex;flex-direction:column;gap:14px;font-size:12px;padding-top:6px;min-width:70px">
+          <div><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#94a3b8;margin-right:6px"></span>总量</div>
+          <div><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#2563eb;margin-right:6px"></span>AI 岗位</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col cp-overview-only">
+      <div class="page-card">
+        <div class="block-title">AI 岗位专业领域分布</div>
+        <div class="block-sub" id="cpDomainSub">Top 5 专业子方向的岗位数量</div>
+        <div id="cpDomains"></div>
+      </div>
+      <div class="page-card">
+        <div class="block-title">AI 岗位 JD 特征分析</div>
+        <div class="block-sub" id="cpTraitSub">JD 文本中关键词出现频率</div>
+        <div id="cpTraits"></div>
+      </div>
+    </div>
+
+    <div class="page-card cp-overview-only">
+      <div class="block-title">城市布局</div>
+      <div class="block-sub">岗位地点分布（按岗位数）</div>
+      <div id="cpCities"></div>
+    </div>
+
+    <div class="page-card" id="cpJobsSection">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px">
+        <div>
+          <div class="block-title" id="cpJobsTitle" style="margin-bottom:0">全部在招岗位</div>
+          <div class="block-sub" id="cpJobsSub" style="margin-top:2px">岗位、城市、类型、发布时间、查看 JD</div>
+        </div>
+        <button class="btn-ghost" onclick="cpExportCsv()" style="padding:0 14px;white-space:nowrap">导出 CSV</button>
+      </div>
+      <div class="search-row" style="margin-bottom:10px">
+        <input type="text" id="cpQ" class="input-ui" placeholder="搜索关键词，如：Agent / 全栈 / 字节跳动..." style="flex:1"/>
+        <button class="btn-ui" onclick="cpSearch()">查询</button>
+      </div>
+      <div class="filter-bar">
+        <select id="cpFType" class="filter-sel" onchange="cpSearch()">
+          <option value="">全部类型</option>
+          <option>社招</option><option>校招</option><option>实习</option><option>实习</option>
+        </select>
+        <select id="cpFDir" class="filter-sel" onchange="cpSearch()">
+          <option value="">全部方向</option>
+          <option>产品</option><option>Agent研发</option><option>后端研发</option>
+          <option>算法</option><option>数据分析</option><option>前端研发</option>
+          <option>LLM/大模型</option><option>AI Infra</option><option>推荐/广告</option>
+        </select>
+        <select id="cpFDate" class="filter-sel" onchange="cpSearch()">
+          <option value="">全部时间</option>
+          <option value="1">近 1 天</option><option value="3">近 3 天</option>
+          <option value="7">近 7 天</option><option value="14">近两周</option>
+          <option value="30">近一个月</option><option value="99">更早</option>
+        </select>
+        <span id="cpFCount" style="font-size:12px;color:var(--muted);margin-left:4px"></span>
+      </div>
+      <table class="job-table">
+        <thead><tr><th style="width:46%">岗位</th><th>方向</th><th>城市</th><th>类型</th><th>更新</th><th></th></tr></thead>
+        <tbody id="cpJobsBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
