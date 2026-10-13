@@ -313,7 +313,7 @@ function selEmGroup(idx){
 }
 function renderEmerging(t){
   _emSel=0;
-  const tip = `近 30 天内，平台侧、模型侧与应用侧出现了更细分的 AI 原生分工，反映行业正在从「是否做 AI」转向「如何把 AI 工程化、规模化、业务化」。`;
+  const tip = `AI 行业分工细化后涌现的新兴角色。这类职位在一两年前几乎不存在，反映 AI 正从研究走向工程化落地，覆盖 Agent 基础设施、具身智能、前沿评测等方向。`;
   const tipHtml = `<span class="tip-wrap"><span class="tip-icon" tabindex="0" onmouseenter="tipShow(this)" onmouseleave="tipHide(this)" onfocus="tipShow(this)" onblur="tipHide(this)">${TIP_ICON}</span><span class="tip-box">${tip}</span></span>`;
   return `<div class="panel-top"><div><h3 style="margin-bottom:8px">${t.name}${tipHtml}</h3><div style="font-size:14px;color:var(--muted)">${t.summary}</div></div></div>
   <div class="insight-box"><div style="font-size:12px;font-weight:800;margin-bottom:8px;color:var(--brand)">专题洞察</div><ul>${t.insights.map(x=>'<li>'+x+'</li>').join('')}</ul></div>
@@ -354,7 +354,7 @@ function selTopic(id){
     'fullstack':'同时承担前后端的工程师。关键判定词：「全栈」「前后端」「全链路开发」，JD 中普遍要求 AI Coding 能力。',
     'fde':'Forward Deployed Engineer，前线部署工程师。代表岗位：解决方案工程师、交付工程师。核心要求是把技术能力转化为客户业务结果。',
     'pde':'Product Engineer，产品工程师。兼具产品判断、交互设计与工程实现能力，能独立完成一个功能从定义到上线的全流程。',
-    'emerging':'近 30 天内，平台侧、模型侧与应用侧出现了更细分的 AI 原生分工，反映行业正在从「是否做 AI」转向「如何把 AI 工程化、规模化、业务化」。新兴岗位集中在工程化、评测、安全与应用落地等环节，组织分工持续加深。'
+    'emerging':'AI 行业分工细化后涌现的新兴角色。这类职位在一两年前几乎不存在，反映 AI 正从研究走向工程化落地，覆盖 Agent 基础设施、具身智能、前沿评测等方向。'
   };
   const topicTipHtml = topicTips[t.id] ? `<span class="tip-wrap"><span class="tip-icon" tabindex="0" onmouseenter="tipShow(this)" onmouseleave="tipHide(this)" onfocus="tipShow(this)" onblur="tipHide(this)">${TIP_ICON}</span><span class="tip-box">${topicTips[t.id]}</span></span>` : '';
   panel.innerHTML=`<div class="panel-top"><div><h3 style="margin-bottom:8px">${t.name}${topicTipHtml}</h3><div style="font-size:14px;color:var(--muted)">${t.summary}</div></div></div>
