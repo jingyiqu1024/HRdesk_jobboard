@@ -1,0 +1,40 @@
+# 数据文件（体积大，不入库）
+*.xlsx
+
+# 旧版本文件
+generate_demo.py
+generate_demo.py.bak.*
+generate_real.py
+generate_real.py.bak.*
+generate_standalone.py
+generate_v2_bak.py
+index.html
+index_real.html
+detail.html
+jd_detail_data.js
+jd-detail.html
+废弃/
+
+# debug 产物
+debug_*.png
+jb_*.png
+_bad_fragment.txt
+_good_fragment.txt
+_open_sample_job.js
+_paginated_js.py
+
+# 生成的 HTML（可由脚本重新生成）
+# 如果你想把生成结果也传上去，注释掉下面这行
+# index_standalone.html
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+
+# macOS
+.DS_Store
+.codeflicker/
+
+# jd_data 原始数据目录（视需要决定）
+jd_data/
