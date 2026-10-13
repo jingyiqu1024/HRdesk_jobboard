@@ -32,12 +32,9 @@ def process_company(name, rows, title_f, time_f, type_f=None, url_f=None):
         direction = get_direction(full) if cls['is_builder'] else '其他'
 
         topic = '方向热度与技术栈'
-        if cls['is_pde']:
-            topic = 'PDE 专题'
-        elif cls['is_fde']:
-            topic = 'FDE 专题'
-        elif cls['is_fullstack']:
-            topic = '全栈工程师'
+        if cls['is_fullstack']:   topic = '全栈工程师'
+        elif cls['is_pde']:       topic = 'PDE 专题'
+        elif cls['is_fde']:       topic = 'FDE 专题'
 
         st.total += 1
         if cls['is_builder']:
