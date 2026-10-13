@@ -28,9 +28,9 @@ function renderCpRows(items){
   return items.map(j=>`<tr>
     <td><div class="job-name">${escapeHtml(j.title)}</div>
       <div class="job-tags">${(j.tags||[]).map(t=>'<span class="job-tag">'+escapeHtml(t)+'</span>').join('')}</div></td>
-    <td style="color:#475569">${escapeHtml(j.direction||'-')}</td>
     <td style="color:#475569">${escapeHtml(j.city||'-')}</td>
     <td><span class="type-pill type-${j.type}">${escapeHtml(j.type||'')}</span></td>
+    <td style="color:#475569">${escapeHtml(j.direction||'-')}</td>
     <td style="color:#64748b">${escapeHtml(j.date||'-')}</td>
     <td><a class="btn-ghost" href="${escapeHtml(j.url||'#')}" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">查看 JD ↗</a></td>
   </tr>`).join('');
@@ -58,10 +58,10 @@ function openCompanyPage(companyName, topicName){
   document.getElementById('cpDesc').textContent=c.summary;
   const _kpiTips = {
     'all':       '',
-    'ai':        'Builder + User 两类之和。Builder 岗位本身在造 AI（训练、推理优化等）；User 岗位利用 AI 工具提效。',
+    'ai':        'AI 岗位 = Builder + User 两类之和。Builder 直接参与 AI 能力建设（训练、推理优化、Agent/Infra、评测与安全等）；User 主要把 AI 能力用到业务里（接入模型能力、调用 AI 工具提效）。',
     'fullstack': '同时承担前后端的工程师。关键判定词：「全栈」「前后端」「全链路开发」，JD 中普遍要求 AI Coding 能力。',
     'fde':       'Forward Deployed Engineer，前线部署工程师。代表岗位：解决方案工程师、交付工程师。核心是把技术能力转化为客户业务结果。',
-    'pde':       'Product Design Engineer，产品设计工程师。三维复合判定：「产品判断」 + 「体验感知」 + 「工程实现」至少命中两维。',
+    'pde':       'Product Design Engineer / Product Engineer。判定要求：岗位文本直接出现 Product Engineer / 产品设计工程师 / PDE 即可认定；否则必须同时命中三维信号：「产品判断」 + 「体验感知」 + 「工程实现」三维。',
   };
   const topicKeyMap = {'全栈工程师':'fullstack','FDE 专题':'fde','PDE 专题':'pde'};
   window._cpActiveMetric = topicKeyMap[topicName] || 'all';
@@ -214,16 +214,16 @@ function renderJobAction(j, className='', text='查看 ↗'){
 
 function renderJobList(items){
   if(!items.length) return '<div style="padding:24px;text-align:center;color:var(--muted)">暂无匹配岗位</div>';
-  const header=`<div class="list-th">岗位</div><div class="list-th">方向</div><div class="list-th">公司</div><div class="list-th">城市</div><div class="list-th">类型</div><div class="list-th">更新</div><div class="list-th">操作</div>`;
+  const header=`<div class="list-th">岗位</div><div class="list-th">公司</div><div class="list-th">城市</div><div class="list-th">类型</div><div class="list-th">方向</div><div class="list-th">更新</div><div class="list-th">操作</div>`;
   const rows=items.map(j=>{
     const typePill=j.type?`<span class="type-pill type-${j.type}">${escapeHtml(j.type)}</span>`:'';
     const programPill=(j.program&&j.type==='校招')?'<span class="type-pill" style="background:#fef3c7;color:#b45309;margin-left:4px">人才计划</span>':'';
     return `<div class="list-row">
       <div class="list-td"><div><div class="l-tit">${escapeHtml(j.title)}</div><div class="l-sub">${(j.tags||[]).join(' · ')}</div></div></div>
-      <div class="list-td l-sub">${escapeHtml(j.direction||j.topic)}</div>
       <div class="list-td" style="color:#334155;font-size:13px">${escapeHtml(j.company||'-')}</div>
       <div class="list-td l-sub">${escapeHtml(j.city||'-')}</div>
       <div class="list-td">${typePill}${programPill}</div>
+      <div class="list-td l-sub">${escapeHtml(j.direction||j.topic)}</div>
       <div class="list-td l-sub">${escapeHtml(j.date||'-')}</div>
       <div class="list-td">${renderJobAction(j,'','查看 ↗')}</div>
     </div>`;
@@ -313,7 +313,7 @@ function selEmGroup(idx){
 }
 function renderEmerging(t){
   _emSel=0;
-  const tip = `近 30 天内新出现的 AI 原生角色，覆盖大厂 + AI 独角兽。包含 Agent Harness、具身智能、Post-Training 工程师等 11 类新岗位。`;
+  const tip = `近 30 天内，平台侧、模型侧与应用侧出现了更细分的 AI 原生分工，反映行业正在从「是否做 AI」转向「如何把 AI 工程化、规模化、业务化」。`;
   const tipHtml = `<span class="tip-wrap"><span class="tip-icon" tabindex="0" onmouseenter="tipShow(this)" onmouseleave="tipHide(this)" onfocus="tipShow(this)" onblur="tipHide(this)">${TIP_ICON}</span><span class="tip-box">${tip}</span></span>`;
   return `<div class="panel-top"><div><h3 style="margin-bottom:8px">${t.name}${tipHtml}</h3><div style="font-size:14px;color:var(--muted)">${t.summary}</div></div></div>
   <div class="insight-box"><div style="font-size:12px;font-weight:800;margin-bottom:8px;color:var(--brand)">专题洞察</div><ul>${t.insights.map(x=>'<li>'+x+'</li>').join('')}</ul></div>
@@ -353,8 +353,8 @@ function selTopic(id){
   const topicTips = {
     'fullstack':'同时承担前后端的工程师。关键判定词：「全栈」「前后端」「全链路开发」，JD 中普遍要求 AI Coding 能力。',
     'fde':'Forward Deployed Engineer，前线部署工程师。代表岗位：解决方案工程师、交付工程师。核心要求是把技术能力转化为客户业务结果。',
-    'pde':'Product Design Engineer，产品设计工程师。三维复合判定：「产品判断」 + 「体验感知」 + 「工程实现」至少命中两维。',
-    'emerging':'近 30 天内新出现的 AI 原生角色，覆盖大厂 + AI 独角兽。包含 Agent Harness、具身智能、Post-Training 工程师等 11 类新岗位。'
+    'pde':'Product Design Engineer / Product Engineer，产品工程师。判定要求：岗位文本直接出现 Product Engineer / 产品设计工程师 / PDE 即可认定；否则必须同时命中三维信号：「产品判断」 + 「体验感知」 + 「工程实现」三维全中。',
+    'emerging':'近 30 天内，平台侧、模型侧与应用侧出现了更细分的 AI 原生分工，反映行业正在从「是否做 AI」转向「如何把 AI 工程化、规模化、业务化」。新兴岗位集中在工程化、评测、安全与应用落地等环节，组织分工持续加深。'
   };
   const topicTipHtml = topicTips[t.id] ? `<span class="tip-wrap"><span class="tip-icon" tabindex="0" onmouseenter="tipShow(this)" onmouseleave="tipHide(this)" onfocus="tipShow(this)" onblur="tipHide(this)">${TIP_ICON}</span><span class="tip-box">${topicTips[t.id]}</span></span>` : '';
   panel.innerHTML=`<div class="panel-top"><div><h3 style="margin-bottom:8px">${t.name}${topicTipHtml}</h3><div style="font-size:14px;color:var(--muted)">${t.summary}</div></div></div>
@@ -427,15 +427,15 @@ function cpSearch(){
 }
 function cpExportCsv(){
   const rows=window._cpFilteredJobs||window._cpAllJobs||[];
-  const hdr=['岗位名称','公司','方向','城市','类型','更新日期','标签','JD 链接'];
+  const hdr=['岗位名称','公司','城市','类型','方向','更新日期','标签','JD 链接'];
   const lines=[hdr.join(',')];
   rows.forEach(j=>{
     lines.push([
       `"${(j.title||'').replace(/"/g,'""')}"`,
       `"${(j.company||'')}"`,
-      `"${(j.direction||'')}"`,
       `"${(j.city||'')}"`,
       `"${(j.type||'')}"`,
+      `"${(j.direction||'')}"`,
       `"${(j.date||'')}"`,
       `"${(j.tags||[]).join('、').replace(/"/g,'""')}"`,
       `"${(j.url||'')}"`,
@@ -451,15 +451,15 @@ function cpExportCsv(){
 function exportCsv(){
   const rows = (typeof _filteredCache !== 'undefined' && _filteredCache.length) ? _filteredCache : (typeof JOBS !== 'undefined' ? JOBS : []);
   if(!rows.length){ alert('暂无数据可导出'); return; }
-  const hdr=['岗位名称','公司','方向','城市','类型','更新日期','标签','JD 链接'];
+  const hdr=['岗位名称','公司','城市','类型','方向','更新日期','标签','JD 链接'];
   const lines=[hdr.join(',')];
   rows.forEach(j=>{
     lines.push([
       `"${(j.title||'').replace(/"/g,'""')}"`,
       `"${(j.company||'').replace(/"/g,'""')}"`,
-      `"${(j.direction||'').replace(/"/g,'""')}"`,
       `"${(j.city||'').replace(/"/g,'""')}"`,
       `"${(j.type||'')}"`,
+      `"${(j.direction||'').replace(/"/g,'""')}"`,
       `"${(j.date||'')}"`,
       `"${(j.tags||[]).join('、').replace(/"/g,'""')}"`,
       `"${(j.url||'')}"`,

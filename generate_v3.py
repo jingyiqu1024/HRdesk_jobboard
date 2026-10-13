@@ -81,9 +81,9 @@ function renderCpRows(items){{
     const typePill=j.type?`<span class="type-pill type-${{escapeHtml(j.type)}}">${{escapeHtml(j.type)}}</span>`:'';
     return `<tr>
       <td><div class="job-name">${{escapeHtml(j.title)}}</div><div class="job-tags">${{tags}}</div></td>
-      <td style="color:#475569">${{escapeHtml(j.direction||'-')}}</td>
       <td style="color:#475569">${{escapeHtml(j.city||'-')}}</td>
       <td>${{typePill}}</td>
+      <td style="color:#475569">${{escapeHtml(j.direction||'-')}}</td>
       <td style="color:#64748b">${{escapeHtml(j.date||'-')}}</td>
       <td>${{renderJobAction(j, 'btn-ghost', '查看')}}</td>
     </tr>`;

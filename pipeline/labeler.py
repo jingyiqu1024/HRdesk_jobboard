@@ -19,31 +19,50 @@ BUILDER_PATS = [
     r'推理优化|推理加速|算子|编译器|GPU集群|集群调度|算力|分布式训练|MLOps|AI\s*Infra|运行时|文件系统',
     r'数据标注|数据工程|特征工程|数据科学家',
     r'提示词工程师|Prompt\s*Engineer|垂直领域建模|模型测评|AI合规|AI安全',
-    r'AI架构|业务架构师.*AI|模型能力规划',
+    r'AI架构|模型能力规划',
 ]
 USER_PATS = [
     r'使用AI工具|AI辅助|AI提效|AI赋能|Copilot|AI写文案|AI分析|生成代码',
     r'智能客服|AI运营|AIGC运营|智能营销|AI写JD|AI辅助招聘',
     r'调用API做业务功能|消费AI能力|接入AI能力|对接大模型接口',
 ]
+
+# FDE：Forward Deployed Engineer，前线部署工程师
+# "业务架构师" 移除 —— 字节内部的业务架构师是 IT/内部系统岗，不是 ToB FDE
 FDE_PATS = [
     r'FDE(?![A-Za-z])|Forward\s*Deployed|前线部署',
-    r'解决方案工程师|解决方案架构师|交付工程师|业务架构师',
-    # "深入客户业务现场" 等强信号保留；"方案落地" 太常见改为仅 title 命中才加分（通过 title_only 机制处理）
+    r'解决方案工程师|解决方案架构师|交付工程师',
     r'深入客户业务现场|技术能力转化为业务结果|经验反哺|驻场交付',
 ]
-# FDE 仅在 title 中生效的弱信号（desc/req 里太常见，不单独得分）
+# FDE 仅在 title 中生效的弱信号
 FDE_TITLE_ONLY_PATS = [
     r'方案落地',
 ]
-FS_PATS = [
+
+# 全栈：优先级全栈 > PDE > FDE
+FS_TITLE_PATS = [
     r'全栈|Full[\s_-]?Stack|前后端|跨栈',
-    r'端到端开发|全链路开发|AI全栈|AI Native.*Full',
+    r'AI全栈|端到端开发|全链路开发|AI Native.*Full',
     r'同时负责前端和后端|客户端与服务端|前后端一体化',
 ]
-# PDE_B：UI/UX 只在 \b 边界的完整词命中，避免 "build"、"linux" 等误触发
-PDE_A = [r'需求洞察|概念构思|需求判断|产品规划|产品定义']
-# 注意：「用户场景」太常见（任何工程师 JD 都会写），移除；保留核心 PDE 产品词汇
+FS_BODY_PATS = [
+    # desc/req 里只认「全栈开发/全栈工程师/全栈产品/AI全栈开发」等明确工程语境
+    # 避免部门介绍模板「负责字节跳动的全栈算力基础设施」误触发
+    r'全栈(?:开发|工程师|产品|研发)|AI全栈(?:开发|工程师)?|Full[\s_-]?Stack\s*(?:Dev|Engineer|开发)',
+    r'端到端开发|全链路开发|前后端一体化|同时负责前端和后端|客户端与服务端',
+]
+
+def fs_score_calc(title, desc, req):
+    """全栈得分：title 按原权重；desc/req 只认明确工程语境。"""
+    score = 0.0
+    for pat in FS_TITLE_PATS:
+        if re.search(pat, title, re.I): score += 2.0
+    for pat in FS_BODY_PATS:
+        if re.search(pat, desc, re.I): score += 1.5
+        if re.search(pat, req, re.I):  score += 1.0
+    return score
+
+PDE_A = [r'需求洞察|概念构思|产品规划|产品定义']
 PDE_B = [r'体验感知|交互设计|原型验证|设计语言|\bUI\b|\bUX\b|\bUI/UX\b']
 PDE_C = [r'代码实现|工程实现|全链路交付|独立负责.*上线|端到端交付|写代码']
 
@@ -74,54 +93,46 @@ EM_RULES = [
 EM_DESCS = {name: '新兴 AI 岗位方向' for name, _ in EM_RULES}
 
 # ── 非产研岗位黑名单 ──────────────────────────────────────────────
-# 产研 = 产品、研发、测试、设计、算法。以下类型一律排除出所有专题/AI标注。
-# 规则：title 命中即排除（不看 desc/req）
+# 产研 = 产品（含产品经理/PM）、研发、测试、设计、算法。
+# 以下类型一律排除出所有专题/AI标注（title 命中即排除）。
+# 注意：产品经理/PM 绝对不排除。
 _NON_PROD_TECH_PAT = re.compile(
     # 人力/行政/培训
-    r'HR|人力资源|招聘(?!系统|平台|工具|算法|Agent)|猎头|HRBP|人事|培训师|员工关系|薪酬|绩效专员|管培生|轮岗'
+    r'HR(?!\s*BP技术|产品|系统)|人力资源|招聘(?!系统|平台|工具|算法|Agent)|猎头|HRBP|人事(?!系统)|培训师|员工关系|薪酬|绩效专员|管培生|轮岗'
     # 销售/BD/商务/渠道
-    r'|销售(?!策略算法|预测算法)|BD(?!\s*工程)|商务(?:拓展|开发|合作)|渠道(?:经理|专员|销售)|大客户经理|客户经理|客户成功|KA|(?:账|帐)号运营'
+    r'|销售(?!策略算法|预测算法|系统|平台)|商务(?:拓展|开发|合作)|渠道(?:经理|专员|销售)|大客户(?:经理|总监)|客户成功(?:经理)?|KA(?:经理|专员)'
     # 市场/品牌/PR
-    r'|市场(?:营销|专员|经理|总监|推广)|品牌(?:经理|专员)|公关|PR(?:\s*经理|\s*专员)?$|媒介|投放优化师'
-    # 运营（非产研类）
-    r'|(?:品类|内容|社区|活动|直播|商家|达人|用户增长|电商|供应链|仓储|物流|履约)运营'
-    r'|运营(?:专员|经理|总监|助理|实习)'
-    # 产品经理（非PDE类PM）— PM 本身不是 PDE；用 "产品经理" 排除
-    r'|产品经理(?!\s*工程师)|\bPM\b(?!\s*工程师)'
-    # 财务/法务/风控/合规
-    r'|财务(?:分析师|经理|专员|总监)|法务|合规(?:专员|经理)|风控(?:专员|经理|模型)?$'
+    r'|市场(?:营销|专员|经理|总监|推广)|品牌(?:经理|专员)|公关|媒介(?:投放|规划)|投放优化师'
+    # 运营（排除纯非技术运营）
+    r'|(?:品类|内容|社区|活动|直播|商家|达人|账号)运营'
+    r'|运营(?:专员|助理|实习生)'
+    # 财务/法务/合规/风控
+    r'|财务(?:分析师|经理|专员|总监|BP)|法务(?:专员|经理|顾问)|合规(?:专员|经理)|风控(?:专员|经理)(?!模型|算法|系统)'
     # 采购/供应链/物流
-    r'|采购(?:经理|专员|总监)|供应链(?:经理|专员)|物流(?:规划|专员)|仓储'
-    # 客服
-    r'|客服(?:专员|经理|主管)|售后(?:工程师|专员)'
-    # 芯片/硬件（芯片研发不算软件产研）
-    r'|芯片(?:研发|验证|设计|工程)|固件(?:验证|开发|工程)|存算|FPGA|RTL|EDA|IC设计'
+    r'|采购(?:经理|专员|总监)|供应链(?:经理|专员)(?!系统|平台|算法)|物流(?:规划|专员)|仓储(?:管理|专员)'
+    # 客服/售后
+    r'|客服(?:专员|经理|主管)|售后(?:服务|专员)(?!工程师)'
+    # 芯片/硬件（不算软件产研）
+    r'|芯片(?:研发|验证|设计|工程)|固件(?:验证|开发|工程)|FPGA|RTL|EDA|IC设计'
     r'|硬件(?:工程师|研发|设计)(?!.*软件)'
-    # 行政/安保/后勤
+    # 行政/后勤
     r'|行政(?:专员|经理|助理)|安保|后勤|保洁|司机',
     re.I
 )
 
-# 芯片/硬件类岗位排除（补充：不只看 title，还看部门/类目）
 _CHIP_DEPT_PAT = re.compile(r'芯片研发|固件|存算与AI|VLSI|硬件平台', re.I)
 
-
-def is_non_prod_tech(title, dept=''):
-    """True = 非产研岗位，应排除出所有专题统计。"""
-    if _NON_PROD_TECH_PAT.search(title):
-        return True
-    if _CHIP_DEPT_PAT.search(title) or _CHIP_DEPT_PAT.search(dept):
-        return True
+def is_non_prod_tech(title):
+    if _NON_PROD_TECH_PAT.search(title): return True
+    if _CHIP_DEPT_PAT.search(title): return True
     return False
-
 
 def classify_job(title, desc, req):
     title = title or ""
-    desc = desc or ""
-    req = req or ""
-    full = f"{title}\n{desc}\n{req}"
+    desc  = desc  or ""
+    req   = req   or ""
+    full  = f"{title}\n{desc}\n{req}"
 
-    # ── 非产研岗位：所有专题/AI 标注直接设为 False ──
     if is_non_prod_tech(title):
         return {'is_builder': False, 'is_user': False,
                 'is_pde': False, 'is_fde': False, 'is_fullstack': False}
@@ -129,18 +140,20 @@ def classify_job(title, desc, req):
     b_score = weighted_score(BUILDER_PATS, title, desc, req)
     u_score = weighted_score(USER_PATS, title, desc, req)
 
-    # FDE score：强信号正常计分；弱信号"方案落地"仅 title 命中才得分
+    # FDE score
     fde_score = weighted_score(FDE_PATS, title, desc, req)
     for pat in FDE_TITLE_ONLY_PATS:
-        if re.search(pat, title, re.I):
-            fde_score += 2.0  # title 命中则加分
+        if re.search(pat, title, re.I): fde_score += 2.0
 
-    fs_score = weighted_score(FS_PATS, title, desc, req)
+    # 全栈 score
+    fs_s = fs_score_calc(title, desc, req)
 
     if re.search(r'AI产品经理|模型产品经理|AIGC产品经理', title, re.I):
-        if re.search(r'模型能力规划|模型演进|模型效果|模型路线图|训练策略', full, re.I): b_score += 3
-        else: u_score += 3
-    if re.search(r'提示词工程师|Prompt\s*Engineer|业务架构师', title, re.I): b_score += 3
+        if re.search(r'模型能力规划|模型演进|模型效果|模型路线图|训练策略', full, re.I):
+            b_score += 3
+        else:
+            u_score += 3
+    if re.search(r'提示词工程师|Prompt\s*Engineer', title, re.I): b_score += 3
     if re.search(r'前端|后端|客户端|服务端|开发工程师', title, re.I) \
        and re.search(r'调用API|对接大模型接口|消费AI能力', full, re.I) \
        and not re.search(r'训练|微调|推理优化|框架|底层|编译器|算力', full, re.I):
@@ -150,49 +163,37 @@ def classify_job(title, desc, req):
         b_score = min(b_score, 0)
         if re.search(r'AI', full, re.I): u_score += 1
 
-    # PDE 三维评分
+    # PDE 三维
     pde_dims = 0
     if weighted_score(PDE_A, title, desc, req) >= 1: pde_dims += 1
     if weighted_score(PDE_B, title, desc, req) >= 1: pde_dims += 1
     if weighted_score(PDE_C, title, desc, req) >= 1: pde_dims += 1
 
-    # PDE 排除：芯片/合规/安全/法务类 Product Engineer 不算 PDE
     _pde_exclude = bool(re.search(
         r'(?:Compliance|Security|Legal|Risk|QA|Quality)\s+Product\s+Engineer'
         r'|芯片产品工程师|产品工程师.*芯片|芯片.*产品工程'
-        # 算法/数据/评测工程师 —— 不是 PDE（不具备产品判断+体验感知特征）
         r'|算法工程师|评测算法|数据工程师|网络传输工程师|通信网络|车云通信'
-        # Infra 工程师（纯基础设施方向）—— title 含 Infra 且不含 Product/产品/PDE
         r'|(?:Agent\s+)?Infra\s+工程师',
         title, re.I
     ))
-    # PDE 判定收严：
-    # - title 直接命中 Product Engineer / 产品工程师 / PDE → 直接认定
-    # - 否则必须三维全中（A+B+C），防止研发 JD 里「需求洞察+工程实现」误触发
-    _pde_title_hit = bool(re.search(
+    # PDE 判定：title / description / requirement 任一处直接出现 Product Engineer / 产品设计工程师 / PDE 即可认定；
+    # 其他情况维持严格规则：需要 A+B+C 三维全中。
+    _pde_direct_hit = bool(re.search(
         r'PDE(?![A-Za-z])|产品设计工程师|Product\s*Design\s*Engineer'
-        r'|Product\s*Engineer'
-        r'|产品工程师'
+        r'|Product\s*Engineer|产品工程师'
         r'|KimiCode.*产品|Kimi.*产品实习生',
-        title, re.I
+        full, re.I
     ))
-    is_pde = not _pde_exclude and (_pde_title_hit or pde_dims >= 3)
+    is_pde = not _pde_exclude and (_pde_direct_hit or pde_dims >= 3)
 
-    is_builder = b_score >= 1.5
-    is_user = u_score >= 1.5 and not is_builder
-    is_fde = fde_score >= 1.5 and not re.search(r'销售经理|销售总监|销售代表|渠道销售', title, re.I)
-
-    # 全栈排除：AI算力基础设施部门非工程岗、以及已是PDE的岗位
-    _ai_infra_dept = bool(re.search(r'AI算力基础设施|算力基础设施', title, re.I))
-    _non_eng_infra = bool(re.search(
-        r'运营管理|商务拓展|结算专员|采购经理|资源规划|经营运营|经营分析|战略运营',
-        title, re.I
-    ))
-    is_fullstack = fs_score >= 1.5 and not (_ai_infra_dept and _non_eng_infra)
+    is_builder   = b_score >= 1.5
+    is_user      = u_score >= 1.5 and not is_builder
+    is_fde       = fde_score >= 1.5 and not re.search(
+        r'销售经理|销售总监|销售代表|渠道销售', title, re.I)
+    is_fullstack = fs_s >= 1.5
 
     return {'is_builder': is_builder, 'is_user': is_user,
             'is_pde': is_pde, 'is_fde': is_fde, 'is_fullstack': is_fullstack}
-
 
 def get_direction(text):
     for name, pat in DIRECTION_RULES:
