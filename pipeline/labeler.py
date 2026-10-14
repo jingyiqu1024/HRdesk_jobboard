@@ -66,6 +66,16 @@ PDE_A = [r'需求洞察|概念构思|产品规划|产品定义']
 PDE_B = [r'体验感知|交互设计|原型验证|设计语言|\bUI\b|\bUX\b|\bUI/UX\b']
 PDE_C = [r'代码实现|工程实现|全链路交付|独立负责.*上线|端到端交付|写代码']
 
+# PDE 四类组合标签
+# P=产品思维 D=设计感知 E=工程实现
+# 只展示双维及以上：PD / PE / DE / PDE
+_PDE_TYPE_MAP = {
+    (True,  True,  True):  'PDE',
+    (True,  True,  False): 'PD',
+    (True,  False, True):  'PE',
+    (False, True,  True):  'DE',
+}  # 单维命中不展示，返回 ''
+
 DIRECTION_RULES = [
     ('LLM/大模型', re.compile(r'大模型|LLM|大语言模型|预训练|后训练|SFT|RLHF|对齐', re.I)),
     ('Agent/RAG', re.compile(r'Agent|智能体|RAG|向量检索|知识图谱|多智能体', re.I)),
@@ -176,15 +186,13 @@ def classify_job(title, desc, req):
         r'|(?:Agent\s+)?Infra\s+工程师',
         title, re.I
     ))
-    # PDE 判定：title / description / requirement 任一处直接出现 Product Engineer / 产品设计工程师 / PDE 即可认定；
-    # 其他情况维持严格规则：需要 A+B+C 三维全中。
-    _pde_direct_hit = bool(re.search(
-        r'PDE(?![A-Za-z])|产品设计工程师|Product\s*Design\s*Engineer'
-        r'|Product\s*Engineer|产品工程师'
-        r'|KimiCode.*产品|Kimi.*产品实习生',
-        full, re.I
-    ))
-    is_pde = not _pde_exclude and (_pde_direct_hit or pde_dims >= 3)
+    # PDE 四类判定：基于三维是否命中，输出组合标签
+    # 直接命中规则已删除，完全依赖维度组合
+    _hit_a = weighted_score(PDE_A, title, desc, req) >= 1
+    _hit_b = weighted_score(PDE_B, title, desc, req) >= 1
+    _hit_c = weighted_score(PDE_C, title, desc, req) >= 1
+    _pde_type = '' if _pde_exclude else _PDE_TYPE_MAP.get((_hit_a, _hit_b, _hit_c), '')
+    is_pde = _pde_type != ''
 
     is_builder   = b_score >= 1.5
     is_user      = u_score >= 1.5 and not is_builder
@@ -193,7 +201,8 @@ def classify_job(title, desc, req):
     is_fullstack = fs_s >= 1.5
 
     return {'is_builder': is_builder, 'is_user': is_user,
-            'is_pde': is_pde, 'is_fde': is_fde, 'is_fullstack': is_fullstack}
+            'is_pde': is_pde, 'pde_type': _pde_type,
+            'is_fde': is_fde, 'is_fullstack': is_fullstack}
 
 def get_direction(text):
     for name, pat in DIRECTION_RULES:

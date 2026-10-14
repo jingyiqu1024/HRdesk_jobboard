@@ -27,12 +27,12 @@ unicorns = ctx['unicorns']
 COMPANIES = ctx['COMPANIES']
 UNICORNS = ctx['UNICORNS']
 TOPICS = ctx['TOPICS']
-HEATMAP = ctx['HEATMAP']
 KEYWORDS = ctx['KEYWORDS']
 CATEGORIES = ctx['CATEGORIES']
 JOBS = ctx['JOBS']
 JD_DETAIL = ctx['JD_DETAIL']
 EMERGING_GROUPS = ctx['EMERGING_GROUPS']
+INSIGHTS = ctx['INSIGHTS']
 
 print('📄 生成 HTML …')
 grand_total  = sum(c['total'] for c in COMPANIES) + sum(c['total'] for c in UNICORNS)
@@ -62,33 +62,13 @@ function drawTrend(id,totalArr,aiArr){{const canvas=document.getElementById(id);
 const COMPANIES = {json.dumps(COMPANIES, ensure_ascii=False)};
 const UNICORNS = {json.dumps(UNICORNS, ensure_ascii=False)};
 const TOPICS = {json.dumps(TOPICS, ensure_ascii=False)};
-const HEATMAP = {json.dumps(HEATMAP, ensure_ascii=False)};
 const KEYWORDS = {json.dumps(KEYWORDS, ensure_ascii=False)};
 const CATEGORIES = {json.dumps(CATEGORIES, ensure_ascii=False)};
 const JOBS = {json.dumps(JOBS, ensure_ascii=False)};
 const JOB_DETAILS = {json.dumps(JD_DETAIL, ensure_ascii=False)};
 const EMERGING_GROUPS = {json.dumps(EMERGING_GROUPS, ensure_ascii=False)};
+const INSIGHTS = {json.dumps(INSIGHTS, ensure_ascii=False)};
 {JS_LOGIC}
-function renderIndustry(){{
-  const el=document.getElementById('coGrid');
-  if(!el) return;
-  el.innerHTML=COMPANIES.map(c=>`<div class="co-card" onclick="openCompanyPage('${{c.name}}')"><div class="co-name"><span>${{c.name}}</span><span class="co-jump">查看详情 →</span></div><div class="co-mini-grid"><div class="mini-kpi"><div class="mini-label">在招总量</div><div class="mini-value">${{c.total.toLocaleString()}}</div><div class="mini-trend" style="color:#64748b">本期快照</div></div><div class="mini-kpi"><div class="mini-label">AI 岗位</div><div class="mini-value">${{(c.ai+(c.ai_user||0)).toLocaleString()}}</div><div class="mini-trend" style="color:#2563eb">占比 ${{c.ai_ratio}}%</div></div></div></div>`).join('');
-}}
-
-function renderCpRows(items){{
-  return items.map(j => {{
-    const tags=(j.tags||[]).slice(0,3).map(t=>`<span class="l-tag">${{escapeHtml(t)}}</span>`).join('');
-    const typePill=j.type?`<span class="type-pill type-${{escapeHtml(j.type)}}">${{escapeHtml(j.type)}}</span>`:'';
-    return `<tr>
-      <td><div class="job-name">${{escapeHtml(j.title)}}</div><div class="job-tags">${{tags}}</div></td>
-      <td style="color:#475569">${{escapeHtml(j.city||'-')}}</td>
-      <td>${{typePill}}</td>
-      <td style="color:#475569">${{escapeHtml(j.direction||'-')}}</td>
-      <td style="color:#64748b">${{escapeHtml(j.date||'-')}}</td>
-      <td>${{renderJobAction(j, 'btn-ghost', '查看')}}</td>
-    </tr>`;
-  }}).join('');
-}}
 </script>
 </body>
 </html>'''
