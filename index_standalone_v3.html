@@ -345,7 +345,7 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
         <span class="fb-label">专题</span>
         <select id="fTopic" class="filter-sel" onchange="searchJobs()">
           <option value="">全部专题</option>
-          <option>全栈工程师</option><option>FDE 专题</option><option>PDE 专题</option>
+          <option>AI 岗位</option><option>全栈工程师</option><option>FDE 专题</option><option>PDE 专题</option>
         </select>
       </div>
       <div class="fb-group">
@@ -454,7 +454,7 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
           <span class="fb-label">专题</span>
           <select id="cpFTopic" class="filter-sel" onchange="cpSearch()">
             <option value="">全部专题</option>
-            <option>全栈工程师</option><option>FDE 专题</option><option>PDE 专题</option>
+            <option>AI 岗位</option><option>全栈工程师</option><option>FDE 专题</option><option>PDE 专题</option>
           </select>
         </div>
         <div class="fb-group">
@@ -655,7 +655,9 @@ function searchJobs(){
   const now = new Date('2026-10-10');
 
   _filteredCache = JOBS.filter(j => {
-    if(fTopic && j.topic !== fTopic) return false;
+    if(fTopic === 'AI 岗位'){
+      if(!(j.tags||[]).some(t => t==='AI-Builder'||t==='AI-User')) return false;
+    } else if(fTopic && j.topic !== fTopic) return false;
     if(fCo && j.company !== fCo) return false;
     if(fType && j.type !== fType) return false;
     if(fDir && j.direction !== fDir) return false;
@@ -925,6 +927,7 @@ function openCompanyPage(name, topicName){
   }
   ['cpQ','cpFType','cpFTopic','cpFDir','cpFDate'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   window._cpFilteredByMetric = null;
+  window._cpFilterAI = false;
   cpSearch();
 
   document.getElementById('companyPage').classList.add('show');
@@ -935,14 +938,15 @@ function openCompanyPage(name, topicName){
 function cpApplyMetric(metricKey){
   window._cpActiveMetric = metricKey;
   document.querySelectorAll('#cpKpis .kpi-cell').forEach(el => el.classList.toggle('active', el.dataset.kpiKey === metricKey));
-  const topicMap = {fullstack:'全栈工程师', fde:'FDE 专题', pde:'PDE 专题'};
+  const topicMap = {ai:'AI 岗位', fullstack:'全栈工程师', fde:'FDE 专题', pde:'PDE 专题'};
   const topicFilter = topicMap[metricKey] || '';
   // 写入专题筛选下拉
   const cpFTopic = document.getElementById('cpFTopic');
   if(cpFTopic) cpFTopic.value = topicFilter;
   // 清空其他筛选
   ['cpFType','cpFDir','cpFDate'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
-  // 不再用 _cpFilteredByMetric，由 cpSearch 直接读 cpFTopic 过滤
+  // AI 岗位通过 tags 过滤，fTopic==='AI 岗位' 也走同一逻辑
+  window._cpFilterAI = (metricKey === 'ai');
   window._cpFilteredByMetric = null;
   cpSearch();
   // 平滑滚动到岗位列表
@@ -963,7 +967,9 @@ function cpSearch(){
 
   _cpFiltered = base.filter(j => {
     if(fType && j.type !== fType) return false;
-    if(fTopic && j.topic !== fTopic) return false;
+    if(fTopic === 'AI 岗位'){
+      if(!(j.tags||[]).some(t => t==='AI-Builder'||t==='AI-User')) return false;
+    } else if(fTopic && j.topic !== fTopic) return false;
     if(fDir && j.direction !== fDir) return false;
     if(q && ![j.title, j.direction, j.city, j.topic].some(x => String(x||'').toLowerCase().includes(q))) return false;
     if(fDate && j.date){
